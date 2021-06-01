@@ -11,7 +11,7 @@
       enabled: yes
   - name: "Configuring the repository to download Kubeadm,kubelet and kubectl"
     copy:
-      src: "kubernetes-slave-configuration/files/kubernetes.repo"
+      src: "configure_kubernetes_slave/files/kubernetes.repo"
       dest: "/etc/yum.repos.d/kubernetes.repo"
   - name: "Installing Kubeadm, kubelet and kubectl"
     package:
@@ -28,7 +28,7 @@
       enabled: yes
   - name: "Configuring Docker"
     copy:
-      src: "kubernetes-slave-configuration/files/daemon.json"
+      src: "configure_kubernetes_slave/files/daemon.json"
       dest: "/etc/docker/daemon.json"
   - name: "Restarting Docker services"
     service:
@@ -40,7 +40,7 @@
       state: present
   - name: "Configuring TC driver files"
     copy:
-      src: "kubernetes-slave-configuration/files/k8s.conf"
+      src: "configure_kubernetes_slave/files/k8s.conf"
       dest: "/etc/sysctl.d/k8s.conf"
   - name: "Refreshing sysctl"
     shell:
