@@ -24,7 +24,7 @@ Example Playbook
  - name: "Configure Kuberentes Slaves"
    hosts: slaves
    roles:
-   - kubernetes-slave-configuration
+   - configure_kubernetes_slave
 
 Author Information
 ------------------
