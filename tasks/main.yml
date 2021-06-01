@@ -1,0 +1,54 @@
+---
+# tasks file for kubernetes-slave-configuration
+  - name: "Installing docker"
+    package:
+      name: "docker"
+      state: present
+  - name: "Enabling docker services"
+    service:
+      name: "docker"
+      state: started
+      enabled: yes
+  - name: "Configuring the repository to download Kubeadm,kubelet and kubectl"
+    copy:
+      src: "kubernetes-slave-configuration/files/kubernetes.repo"
+      dest: "/etc/yum.repos.d/kubernetes.repo"
+  - name: "Installing Kubeadm, kubelet and kubectl"
+    package:
+      name: "{{  item  }}"
+      state: present
+    loop:
+    - "kubeadm"
+    - "kubelet"
+    - "kubectl"
+  - name: "Starting Kubelet service"
+    service:
+      name: "kubelet"
+      state: started
+      enabled: yes
+  - name: "Configuring Docker"
+    copy:
+      src: "kubernetes-slave-configuration/files/daemon.json"
+      dest: "/etc/docker/daemon.json"
+  - name: "Restarting Docker services"
+    service:
+      name: "docker"
+      state: restarted
+  - name: "Installing TC driver"
+    package:
+      name: "iproute-tc"
+      state: present
+  - name: "Configuring TC driver files"
+    copy:
+      src: "kubernetes-slave-configuration/files/k8s.conf"
+      dest: "/etc/sysctl.d/k8s.conf"
+  - name: "Refreshing sysctl"
+    shell:
+      cmd: "sysctl --system"
+  - name: "Creating token command"
+    copy:
+      content: "{{  hostvars['DUMMY_HOST']['join_cmd']  }}"
+      dest: "command.txt"
+  - name: "Connecting to master"
+    shell: "cat command.txt | bash"
+
